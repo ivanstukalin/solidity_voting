@@ -67,15 +67,12 @@ contract VotingOrganizer {
     function finishVoting(uint votingId) votingActvie(votingId) public returns (address) {
         Voting memory voting = _getVoting(votingId);
         require(voting.creationDate < block.timestamp + 3 days, "The voting has not been finished yet.");
-        
-        address winnerAddress = getWinner(voting);
-        address payable _to   = payable(winnerAddress);
-        uint sum              = voting.moneyReceived/(commission/100);
-        
-        _to.transfer(sum);
+        return _finishVoting(voting);
+    }
 
-        voting.isFinished = true;
-        return winnerAddress;
+    function finishVotingForce(uint votingId) ownerAccess() votingActvie(votingId) public returns (address) {
+        Voting memory voting = _getVoting(votingId);
+        return _finishVoting(voting);
     }
 
     function withdrawCommision() ownerAccess public {
@@ -85,7 +82,11 @@ contract VotingOrganizer {
         _to.transfer(_thisContract.balance);
     }
 
-    function getWinner(Voting memory voting) private view returns (address) {
+    function _finishVoting(Voting memory voting) private returns (address) {
+
+    }
+
+    function _getWinner(Voting memory voting) private view returns (address) {
         uint256 winningVoteCount = 0;
         uint256 voteCount        = 0;
         uint256 winnerId         = 0;
@@ -105,6 +106,7 @@ contract VotingOrganizer {
         require(isSingleWinner, "There must be one winner in the voting.");
         return voting.candidateList[winnerId];
     }
+
 
     function _hasVoterAlreadyVote(uint256 votingId, address voter) private view returns (bool) {
         for (uint256 i = 0; i < _votedVoters[votingId].length; i++) {
