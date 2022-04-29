@@ -66,7 +66,7 @@ contract VotingOrganizer {
 
     function finishVoting(uint votingId) votingActvie(votingId) public returns (address) {
         Voting memory voting = _getVoting(votingId);
-        require(voting.creationDate < block.timestamp + 3 days, "The voting has not been finished yet.");
+        require(voting.creationDate + 3 days < block.timestamp, "The voting has not been finished yet.");
         return _finishVoting(voting);
     }
 
@@ -83,7 +83,16 @@ contract VotingOrganizer {
     }
 
     function _finishVoting(Voting memory voting) private returns (address) {
+        uint256 sum           = 0;
+        address winnerAddress = _getWinner(voting);
+        address payable _to   = payable(winnerAddress);
 
+        sum                 = voting.moneyReceived/10*9;
+        
+        _to.transfer(sum);
+
+        voting.isFinished = true;
+        return winnerAddress;
     }
 
     function _getWinner(Voting memory voting) private view returns (address) {
@@ -133,17 +142,17 @@ contract VotingOrganizer {
     }
 
     function _isCandidateInVoting(Voting memory voting, address candidate) private pure {
-        bool isCandidateInVoting = true;
+        bool isCandidateInVoting = false;
         for (uint256 i; i < voting.candidateList.length; i++) {
             if (voting.candidateList[i] == candidate) {
-                return;
+                isCandidateInVoting = true;
             }
         }
         require(isCandidateInVoting, "Candidate does not exist");
     }
 
     modifier ownerAccess() {
-        require(msg.sender == _owner, "Has no right to add voting");
+        require(msg.sender == _owner, "Has no rights");
         _;
     }
 
