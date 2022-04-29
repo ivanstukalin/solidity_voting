@@ -86,8 +86,7 @@ contract VotingOrganizer {
         uint256 sum           = 0;
         address winnerAddress = _getWinner(voting);
         address payable _to   = payable(winnerAddress);
-
-        sum                 = voting.moneyReceived/10*9;
+        sum                   = voting.moneyReceived * (100-commission)/100;
         
         _to.transfer(sum);
 
