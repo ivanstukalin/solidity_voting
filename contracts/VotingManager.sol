@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.4;
 
-contract VotingOrganizer {
+contract VotingManager {
 
     struct Voting {
         uint256   id;
