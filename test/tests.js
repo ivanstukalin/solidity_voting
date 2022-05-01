@@ -3,7 +3,7 @@ const { ethers } = require("hardhat");
 
 const VOTING_PRICE = 10000000000000000n;
 
-describe("Voting", function () {
+describe("VotingManager", function () {
   let owner
   let firstCandidate
   let secondCandidate
