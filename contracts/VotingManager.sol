@@ -12,8 +12,8 @@ contract VotingManager {
         bool      isFinished;
     }
 
-    uint     public votingPrice;
-    uint     public commission;
+    uint public votingPrice;
+    uint public commission;
 
     address  private _owner;
     Voting[] private _votings;
@@ -90,8 +90,12 @@ contract VotingManager {
         
         _to.transfer(sum);
 
-        voting.isFinished = true;
+        _setVotingAsFinishedById(voting.id);
         return winnerAddress;
+    }
+
+    function _setVotingAsFinishedById(uint256 votingId) private {
+        _votings[votingId].isFinished = true;
     }
 
     function _getWinner(Voting memory voting) private view returns (address) {
